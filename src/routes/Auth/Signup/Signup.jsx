@@ -8,7 +8,7 @@ import {
   Button,
   Message,
 } from "semantic-ui-react";
-import "./Signup.css";
+import "../Auth.css";
 import firebase from "../../../server/firebase";
 import { Link } from "react-router-dom";
 
