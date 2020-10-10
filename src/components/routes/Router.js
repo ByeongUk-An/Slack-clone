@@ -7,9 +7,12 @@ import {
   withRouter,
 } from "react-router-dom";
 import App from "../../App";
+import { connect } from "react-redux";
 import Login from "../../routes/Auth/Login/Login";
 import Signup from "../../routes/Auth/Signup/Signup";
 import firebase from "../../server/firebase";
+
+import { setUser } from "./store/action";
 
 const IndexRouter = (props) => {
   useEffect(() => {
@@ -31,7 +34,7 @@ const IndexRouter = (props) => {
   );
 };
 
-const IndexWithRouter = withRouter(IndexRouter);
+const IndexWithRouter = withRouter(connect()(IndexRouter));
 
 export default () => (
   <Router>
