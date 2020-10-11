@@ -11,6 +11,7 @@ const userReducer = (state = initialState, action) => {
       state = { ...payload };
       return state;
   }
+  return state;
 };
 
-export const allReducers = combineReducers({ user: userReducer });
+export const allReducers = combineReducers({ userReducer });

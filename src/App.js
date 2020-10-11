@@ -1,7 +1,8 @@
 import React from "react";
+import SideMenu from './components/SideBar/SideMenu'
 
 function App() {
-  return <h2>hello</h2>;
+  return <SideMenu/>
 }
 
 export default App;
