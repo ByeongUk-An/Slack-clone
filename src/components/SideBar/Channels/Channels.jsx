@@ -2,11 +2,13 @@ import React, {useState} from 'react'
 import './Channels.css'
 import {connect} from 'react-redux';
 import { Menu,Icon,Modal,Form, Segment,Button} from 'semantic-ui-react';
+import firebase from '../../../server/firebase';
 
 function Channels(props) {
     const [openstate,setOpenState] = useState(false);
     const [channelstate,setChannelState] = useState({name:'',discription:''});
     const [loading,setLoading] = useState(false);
+    const channelRef = firebase.database().ref('channels')
     console.log(channelstate);
     const openmodal = () => {
         setOpenState(true)
@@ -14,9 +16,41 @@ function Channels(props) {
     const closemodal = () => {
         setOpenState(false)
     }
+
+    const checkFormValida = () => {
+        return channelstate && channelstate.name && channelstate.discription;
+    }
+
     const onSubmit = () => {
 
+        if(!checkFormValida){
+            return;
+        }
+
+        const key = channelRef.push().key;
+        const channel = {
+            id: key,
+            name: channelstate.name,
+            discription: channelstate.discription,
+            created: {
+                name: props.user.displayName,
+                avatar: props.user.photoURL
+            }
+        }
+
+        setLoading(true);
+        channelRef.child(key).update(channel)
+        .then(() => {
+            setChannelState({
+                name:'',
+                discription:'',
+            })
+            closemodal();   
+            setLoading(false);
+        })
+        .catch(error => console.log(error))
     }
+    
     const handleInput = (e) => {
         const {target: {name, value}} = e;
         setChannelState((curstate)=>{
@@ -45,7 +79,7 @@ function Channels(props) {
                 Create Channel
             </Modal.Header>
             <Modal.Content>
-            <Form >
+            <Form onSubmit={onSubmit}>
           <Segment stacked>
             <Form.Input
               name="name"
@@ -67,7 +101,7 @@ function Channels(props) {
         </Form>
             </Modal.Content>
             <Modal.Actions>
-                <Button>
+                <Button loading={loading} onClick={onSubmit}>
                     <Icon name='checkmark'/> save
                 </Button>
                 <Button onClick={closemodal}>
@@ -79,5 +113,11 @@ function Channels(props) {
     )
 }
 
-export default connect()(Channels)
+const mapStateToProps = state => {
+    return {
+        user: state.userReducer.curUser
+    }
+}
+
+export default connect(mapStateToProps)(Channels)
 
