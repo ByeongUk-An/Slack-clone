@@ -1,10 +1,14 @@
-import { SET_USER } from "./action";
+import { SET_CHANNEL, SET_USER } from "./action";
 import { combineReducers } from "redux";
-let initialState = {
+let initialUserState = {
   curUser: null,
 };
 
-const userReducer = (state = initialState, action) => {
+let initialChannelState = {
+  curChannel: null,
+}
+
+const userReducer = (state = initialUserState, action) => {
   switch (action.type) {
     case SET_USER:
       let payload = action.payload;
@@ -14,4 +18,14 @@ const userReducer = (state = initialState, action) => {
   return state;
 };
 
-export const allReducers = combineReducers({ userReducer });
+const channelReducer = (state = initialChannelState, action) => {
+  switch (action.type) {
+    case SET_CHANNEL:
+      let payload = action.payload;
+      state = { ...payload }
+      return state;
+  }
+  return state;
+}
+
+export const allReducers = combineReducers({ userReducer,channelReducer });

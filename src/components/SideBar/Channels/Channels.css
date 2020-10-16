@@ -6,3 +6,7 @@
 .add_btn {
   cursor: pointer;
 }
+
+.item.active {
+  background-color: #70467a !important;
+}
