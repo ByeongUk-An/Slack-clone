@@ -1,0 +1,23 @@
+.segment .ui.header .sub.header {
+  padding-left: 10px;
+  margin-top: 5px;
+}
+.segment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.segment .ui.header {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.ui.header:first-child {
+  margin-top: 0 !important;
+}
+.inputheader {
+  width: 300px;
+}
+
+.ui.mini.icon.input {
+  width: 100% !important;
+}
