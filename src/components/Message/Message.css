@@ -1,0 +1,5 @@
+.commentcontent {
+  width: 100%;
+  height: calc(100vh - 210px);
+  overflow-y: scroll;
+}

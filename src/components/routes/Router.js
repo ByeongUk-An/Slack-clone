@@ -27,7 +27,7 @@ const IndexRouter = (props) => {
     });
   }, []);
 
-  console.log("Debug",props.curUser);
+  // console.log("Debug",props.curUser);
 
   return (
     <Switch>

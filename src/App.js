@@ -8,6 +8,7 @@ function App() {
   return (
     <Grid columns="equal">
       <SideMenu />
+      
       <Grid.Column className="messagebox">
         <Message />
       </Grid.Column>
