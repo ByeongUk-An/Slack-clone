@@ -18,6 +18,9 @@
   width: 300px;
 }
 
-.ui.mini.icon.input {
+.ui.mini.icon.searchinput {
+  width: 100% !important;
+}
+.ui.mini.icon.searchinput > input {
   width: 100% !important;
 }

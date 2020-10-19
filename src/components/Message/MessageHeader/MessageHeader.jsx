@@ -10,7 +10,7 @@ function MessageHeader() {
                 <Header.Subheader className='subheader'>1111users</Header.Subheader>
             </Header>
             <Header className='inputheader'>
-                <Input name='search' icon='search' size='mini' placeholder='Search Messages' className='input'/>
+                <Input name='search' icon='search' size='mini' placeholder='Search Messages' className='searchinput'/>
             </Header>
         </Segment>
     )
