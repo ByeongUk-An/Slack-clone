@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "firebase": "^7.22.0",
     "javascript-time-ago": "^2.2.9",
+    "mime-types": "^2.1.27",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
@@ -15,7 +16,8 @@
     "react-scripts": "3.4.3",
     "redux": "^4.0.5",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.0.0"
+    "semantic-ui-react": "^2.0.0",
+    "uuid": "^8.3.1"
   },
   "scripts": {
     "start": "react-scripts start",

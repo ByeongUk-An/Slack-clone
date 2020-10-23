@@ -1,75 +1,87 @@
-import React,{useState} from 'react'
-import {Input,Segment,Button,Form} from 'semantic-ui-react'
-import './MessageInput.css'
-import firebase from '../../../server/firebase'
-import {connect} from 'react-redux'
+import React, { useState } from "react";
+import { Input, Segment, Button, Form } from "semantic-ui-react";
+import "./MessageInput.css";
+import firebase from "../../../server/firebase";
+import { connect } from "react-redux";
+import ImageUpload from "../ImageUpload/ImageUpload";
+import { v4 as uuid } from "uuid";
+
 function MessageInput(props) {
-    const [message, setMessage] = useState(null);
-    const messageRef = firebase.database().ref('message');
-    const onChange = (e) => {
-        const { value } = e.target;
-        setMessage(value);
-    }
+  const [message, setMessage] = useState(null);
+  const [filedata, setFileData] = useState(false);
+  const messageRef = firebase.database().ref("message");
+  const onChange = (e) => {
+    const { value } = e.target;
+    setMessage(value);
+  };
 
-    const createMessage = () => {
-        return {
-            user: {
-                avatar: props.user.photoURL,
-                name: props.user.displayName,
-                id: props.user.uid
-            },
-            content: message,
-            timestamp: firebase.database.ServerValue.TIMESTAMP 
-        }
-    }
+  const storegeRef = firebase.storage().ref();
 
-    const onSubmit = () => {
-        if (message !== null) {
-            messageRef.child(props.channel.id)
-                .push()
-                .set(createMessage())
-                .then(() => setMessage(""))
-                .catch(error => console.log(error))
-        }
-    }
-    // const onKeypress = (e) => {
-    //     console.log(e.key)
-    // }
+  const createMessage = (downloadURL) => {
+    return {
+      user: {
+        avatar: props.user.photoURL,
+        name: props.user.displayName,
+        id: props.user.uid,
+      },
+      content: message,
+      image: downloadURL || "",
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+    };
+  };
 
-    const actionButtons = () => {
-        return (
-        <>
-        <Button onClick={onSubmit} icon="send"/>
-        <Button icon="upload" />       
-        </>
-        )
+  const onSubmit = (downloadURL) => {
+    if (message !== null || downloadURL) {
+      messageRef
+        .child(props.channel.id)
+        .push()
+        .set(createMessage(downloadURL))
+        .then(() => setMessage(""))
+        .catch((error) => console.log(error));
     }
+  };
+  // const onKeypress = (e) => {
+  //     console.log(e.key)
+  // }
 
+  const actionButtons = () => {
     return (
-        <Segment className='uploadsegment'>
-            <Form className='uploadform' onSubmit={onSubmit}>
-            <Input
-                fluid='true'
-                label={actionButtons()}
-                labelPosition='right'
-                className='uploadinput'
-                placeholder='Enter Message...'
-                onChange={onChange}
-                name='message'
-                value={message}
-                // onKeypress={onKeypress}
-            />
-            </Form>
-            
-        </Segment>
-    )
+      <>
+        <Button onClick={onSubmit} icon="send" />
+        <Button icon="upload" onClick={() => setFileData(true)} />
+      </>
+    );
+  };
+
+  return (
+    <Segment className="uploadsegment">
+      <Form className="uploadform">
+        <Input
+          fluid="true"
+          label={actionButtons()}
+          labelPosition="right"
+          className="uploadinput"
+          placeholder="Enter Message..."
+          onChange={onChange}
+          name="message"
+          value={message}
+          // onKeypress={onKeypress}
+        />
+      </Form>
+
+      <ImageUpload
+        // uploadImage={}
+        open={filedata}
+        onClose={() => setFileData(false)}
+      />
+    </Segment>
+  );
 }
 const mapsStateToProps = (state) => {
-    return {
-        user: state.userReducer.curUser,
-        channel: state.channelReducer.curChannel
-    }
-}
+  return {
+    user: state.userReducer.curUser,
+    channel: state.channelReducer.curChannel,
+  };
+};
 
-
-export default connect(mapsStateToProps)(MessageInput)
+export default connect(mapsStateToProps)(MessageInput);

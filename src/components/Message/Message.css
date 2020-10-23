@@ -2,4 +2,9 @@
   width: 100%;
   height: calc(100vh - 210px);
   overflow-y: scroll;
+  align-items: flex-end;
+}
+
+.message-box {
+  padding-top: 10px;
 }
