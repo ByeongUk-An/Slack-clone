@@ -40,9 +40,9 @@ function MessageInput(props) {
         .catch((error) => console.log(error));
     }
   };
-  // const onKeypress = (e) => {
-  //     console.log(e.key)
-  // }
+  const onKeypress = (e) => {
+    console.log(e.key);
+  };
 
   const actionButtons = () => {
     return (
