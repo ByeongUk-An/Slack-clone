@@ -81,6 +81,7 @@ function Message(props) {
         usercount={usercount()}
         searchcng={searchTermCng}
         className={props.channel?.name}
+        isPrivate={props.channel?.privit}
       />
       <Segment className="commentcontent">
         <Comment.Group>{showMessage()}</Comment.Group>

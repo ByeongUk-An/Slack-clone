@@ -7,8 +7,8 @@ function MessageHeader(props) {
     <Segment className="segmentheader">
       <Header fluid="true" as="h2">
         <span>
-          {props.channelname}
-          <Icon name="star outline" />
+          {(props.isPrivate ? "@" : "#") + props.channelname}
+          {!props.isPrivate && <Icon name="star outline" />}
         </span>
         <Header.Subheader className="subheader">
           {props.usercount} user{props.usercount === 1 ? "" : "s"}
