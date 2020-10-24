@@ -84,7 +84,7 @@ function Channels(props) {
             key={channel.id}
             name={channel.name}
             onClick={() => props.selectChannel(channel)}
-            active={channel.id === props.channel.id}
+            active={props.channel && channel.id === props.channel.id}
           ></MenuItem>
         );
       });
@@ -96,13 +96,19 @@ function Channels(props) {
       setChannelData((curstate) => {
         const newstate = [...curstate, snap.val()];
 
-        if (newstate.length === 1) {
-          props.selectChannel(newstate[0]);
-        }
         return newstate;
       });
     });
+
+    return () => channelRef.off();
   }, []);
+
+  useEffect(() => {
+    if (channeldata.length > 0) {
+      props.selectChannel(channeldata[0]);
+    }
+  }, [!props.channel ? channeldata : null]);
+
   return (
     <>
       <Menu.Menu>

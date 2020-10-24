@@ -7,7 +7,7 @@ import ImageUpload from "../ImageUpload/ImageUpload";
 import { v4 as uuid } from "uuid";
 
 function MessageInput(props) {
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState("");
   const [filedata, setFileData] = useState(false);
   const messageRef = firebase.database().ref("message");
   const onChange = (e) => {
@@ -31,7 +31,8 @@ function MessageInput(props) {
   };
 
   const onSubmit = (downloadURL) => {
-    if (message !== null || downloadURL) {
+    console.log(downloadURL);
+    if (message || downloadURL) {
       messageRef
         .child(props.channel.id)
         .push()
@@ -40,14 +41,42 @@ function MessageInput(props) {
         .catch((error) => console.log(error));
     }
   };
-  const onKeypress = (e) => {
-    console.log(e.key);
+  // const onKeypress = (e) => {
+  //   console.log(e.key);
+  // };
+
+  const uploadImage = (file, contenttype) => {
+    const filepath = `chat/image/${uuid()}.jpg`;
+
+    storegeRef
+      .child(filepath)
+      .put(file, {
+        contenttype: contenttype,
+      })
+      .then((data) => {
+        data.ref
+          .getDownloadURL()
+          .then((url) => {
+            onSubmit(url);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const actionButtons = () => {
     return (
       <>
-        <Button onClick={onSubmit} icon="send" />
+        <Button
+          onClick={() => {
+            onSubmit();
+          }}
+          icon="send"
+        />
         <Button icon="upload" onClick={() => setFileData(true)} />
       </>
     );
@@ -70,7 +99,7 @@ function MessageInput(props) {
       </Form>
 
       <ImageUpload
-        // uploadImage={}
+        uploadImage={uploadImage}
         open={filedata}
         onClose={() => setFileData(false)}
       />

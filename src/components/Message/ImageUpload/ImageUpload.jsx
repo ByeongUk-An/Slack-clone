@@ -13,7 +13,7 @@ function ImageUpload(props) {
   };
   const onSubmit = () => {
     if (files && accepted.includes(mime.lookup(files.name))) {
-      props.uploadImage();
+      props.uploadImage(files, mime.lookup(files.name));
       props.onClose();
       setFiles(null);
     }
@@ -22,14 +22,20 @@ function ImageUpload(props) {
     <Modal basic open={props.open} onClose={props.onClose}>
       <Modal.Header>Choise image</Modal.Header>
       <Modal.Content>
-        <Input type="file" name="file" onChange={onFile} />
+        <Input
+          type="file"
+          name="file"
+          onChange={onFile}
+          fluid
+          label="File Type(png, jpeg)"
+        />
       </Modal.Content>
       <Modal.Actions>
         <Button color="green" onClick={onSubmit}>
           <Icon name="checkmark" />
           ADD
         </Button>
-        <Button color="tomato" onClick={props.onClose}>
+        <Button color="red" onClick={props.onClose}>
           <Icon name="remove" />
           CLOSE
         </Button>

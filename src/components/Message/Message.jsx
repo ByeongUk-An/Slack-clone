@@ -13,6 +13,7 @@ function Message(props) {
 
   useEffect(() => {
     if (props.channel) {
+      setMessage([]);
       messageRef.child(props.channel.id).on("child_added", (snap) => {
         setMessage((cur) => {
           const newState = [...cur];
