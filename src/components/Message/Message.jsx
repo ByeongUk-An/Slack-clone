@@ -9,6 +9,7 @@ import firebase from "../../server/firebase";
 
 function Message(props) {
   const [message, setMessage] = useState([]);
+  const [searchterm, setSearchTerm] = useState("");
   const messageRef = firebase.database().ref("message");
 
   useEffect(() => {
@@ -24,25 +25,65 @@ function Message(props) {
       return () => messageRef.child(props.channel.id).off();
     }
   }, [props.channel]);
-  console.log(message);
+  // console.log(message);
+
+  const usercount = () => {
+    const inUser = message.reduce((acc, msg) => {
+      if (!acc.includes(msg.user.name)) {
+        acc.push(msg.user.name);
+      }
+      return acc;
+    }, []);
+
+    return inUser.length;
+  };
+
+  const showMessage = () => {
+    let messageshowing = searchterm ? fillteringMessage() : message;
+    console.log(messageshowing, "qq");
+    if (messageshowing.length > 0) {
+      return messageshowing.map((item) => {
+        return (
+          <MessageContent
+            owner={item.user.id === props.user.uid}
+            key={item.timestamp}
+            message={item}
+          />
+        );
+      });
+    }
+  };
+  const fillteringMessage = () => {
+    const regexp = new RegExp(searchterm, "gi");
+    const messages = message.reduce((acc, msg) => {
+      if (
+        (msg.content && msg.content.match(regexp)) ||
+        msg.user.name.match(regexp)
+      ) {
+        acc.push(msg);
+      }
+
+      return acc;
+    }, []);
+    // console.log(messages);
+    return messages;
+  };
+  const searchTermCng = (e) => {
+    const { value } = e.target;
+    setSearchTerm(value);
+    console.log(searchterm);
+  };
 
   return (
     <div className="message-box">
-      <MessageHeader />
+      <MessageHeader
+        channelname={props.channel?.name}
+        usercount={usercount()}
+        searchcng={searchTermCng}
+        className={props.channel?.name}
+      />
       <Segment className="commentcontent">
-        <Comment.Group>
-          {message.length > 0
-            ? message.map((item) => {
-                return (
-                  <MessageContent
-                    owner={item.user.id === props.user.uid}
-                    key={item.timestamp}
-                    message={item}
-                  />
-                );
-              })
-            : null}
-        </Comment.Group>
+        <Comment.Group>{showMessage()}</Comment.Group>
       </Segment>
       <MessageInput />
     </div>

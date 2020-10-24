@@ -25,7 +25,7 @@ const IndexRouter = (props) => {
         props.history.push("/login");
       }
     });
-  }, []);
+  }, [props.curUser]);
 
   // console.log("Debug",props.curUser);
 
@@ -39,19 +39,23 @@ const IndexRouter = (props) => {
   );
 };
 
-const mapStateProps = state => {
+const mapStateProps = (state) => {
   return {
-    curUser: state.userReducer.curUser
-  }
-}
+    curUser: state.userReducer.curUser,
+  };
+};
 
-const dispatchToProps = dispatch => {
+const dispatchToProps = (dispatch) => {
   return {
-    setUser: (user) => {dispatch(setUser(user))}
-  }
-}
+    setUser: (user) => {
+      dispatch(setUser(user));
+    },
+  };
+};
 
-const IndexWithRouter = withRouter(connect(mapStateProps, dispatchToProps)(IndexRouter));
+const IndexWithRouter = withRouter(
+  connect(mapStateProps, dispatchToProps)(IndexRouter)
+);
 
 export default () => (
   <Router>
