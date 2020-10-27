@@ -4,6 +4,7 @@ import MessageInput from "./MessageInput/MessageInput";
 import { Segment, Comment, ItemImage } from "semantic-ui-react";
 import MessageContent from "./MessageContent/MessageContent";
 import { connect } from "react-redux";
+import { setFavChannel, removeFavChannel } from "../../store/action";
 import "./Message.css";
 import firebase from "../../server/firebase";
 
@@ -11,6 +12,8 @@ function Message(props) {
   const [message, setMessage] = useState([]);
   const [searchterm, setSearchTerm] = useState("");
   const messageRef = firebase.database().ref("message");
+
+  const userRef = firebase.database().ref("uaer");
 
   useEffect(() => {
     if (props.channel) {
@@ -27,6 +30,26 @@ function Message(props) {
   }, [props.channel]);
   // console.log(message);
 
+  useEffect(() => {
+    if (props.user) {
+      userRef
+        .child(props.user.uid)
+        .child("favourite")
+        .on("child_added", (snap) => {
+          props.setFavChannel(snap.val());
+        });
+
+      userRef
+        .child(props.user.uid)
+        .child("favourite")
+        .on("child_removed", (snap) => {
+          props.removeFavChannel(snap.val());
+        });
+
+      return () => userRef.child(props.user.uid).child("favourite").off();
+    }
+  }, [props.user]);
+
   const usercount = () => {
     const inUser = message.reduce((acc, msg) => {
       if (!acc.includes(msg.user.name)) {
@@ -40,7 +63,6 @@ function Message(props) {
 
   const showMessage = () => {
     let messageshowing = searchterm ? fillteringMessage() : message;
-    console.log(messageshowing, "qq");
     if (messageshowing.length > 0) {
       return messageshowing.map((item) => {
         return (
@@ -74,9 +96,30 @@ function Message(props) {
     console.log(searchterm);
   };
 
+  const cngstart = () => {
+    let favRef = userRef
+      .child(props.user.uid)
+      .child("favourite")
+      .child(props.channel.id);
+    if (isStarCheked()) {
+      favRef.remove();
+    } else {
+      favRef.set({
+        channelId: props.channel.id,
+        channelName: props.channel.name,
+      });
+    }
+  };
+
+  const isStarCheked = () => {
+    return Object.keys(props.favChannel).includes(props.channel?.id);
+  };
+
   return (
     <div className="message-box">
       <MessageHeader
+        starChange={cngstart}
+        starCheck={isStarCheked()}
         channelname={props.channel?.name}
         usercount={usercount()}
         searchcng={searchTermCng}
@@ -94,7 +137,15 @@ const mapStateToProps = (state) => {
   return {
     channel: state.channelReducer.curChannel,
     user: state.userReducer.curUser,
+    favChannel: state.favReducer.favChannel,
   };
 };
 
-export default connect(mapStateToProps)(Message);
+const mapsDispatchToProps = (dispatch) => {
+  return {
+    setFavChannel: (channel) => dispatch(setFavChannel(channel)),
+    removeFavChannel: (channel) => dispatch(removeFavChannel(channel)),
+  };
+};
+
+export default connect(mapStateToProps, mapsDispatchToProps)(Message);

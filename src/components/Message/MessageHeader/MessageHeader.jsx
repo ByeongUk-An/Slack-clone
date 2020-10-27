@@ -8,7 +8,13 @@ function MessageHeader(props) {
       <Header fluid="true" as="h2">
         <span>
           {(props.isPrivate ? "@" : "#") + props.channelname}
-          {!props.isPrivate && <Icon name="star outline" />}
+          {!props.isPrivate && (
+            <Icon
+              onClick={props.starChange}
+              name={props.starCheck ? "star" : "star outline"}
+              color={props.starCheck ? "blue" : "black"}
+            />
+          )}
         </span>
         <Header.Subheader className="subheader">
           {props.usercount} user{props.usercount === 1 ? "" : "s"}

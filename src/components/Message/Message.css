@@ -1,9 +1,9 @@
 .commentcontent {
   width: 100%;
   height: calc(100vh - 210px);
-  overflow-y: scroll;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column-reverse;
+  overflow-y: scroll;
 }
 
 .message-box {

@@ -31,7 +31,6 @@ function MessageInput(props) {
   };
 
   const onSubmit = (downloadURL) => {
-    console.log(downloadURL);
     if (message || downloadURL) {
       messageRef
         .child(props.channel.id)

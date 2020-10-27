@@ -6,6 +6,9 @@ import { Menu, Icon } from "semantic-ui-react";
 
 function PrivitChat(props) {
   const [userstate, setUserState] = useState([]);
+  const [online, setOnline] = useState([]);
+  const onlineRef = firebase.database().ref(".info/connected");
+  const statusRef = firebase.database().ref("status");
   const userRef = firebase.database().ref("user");
 
   useEffect(() => {
@@ -20,8 +23,41 @@ function PrivitChat(props) {
       });
     });
 
-    return () => userRef.off();
-  }, []);
+    onlineRef.on("value", (snap) => {
+      if (props.user && snap.val()) {
+        const userStateRef = statusRef.child(props.user.uid);
+        userStateRef.set(true);
+        userStateRef.onDisconnect().remove();
+      }
+    });
+
+    return () => {
+      userRef.off();
+      onlineRef.off();
+    };
+  }, [props.user]);
+
+  useEffect(() => {
+    statusRef.on("child_added", (snap) => {
+      setOnline((cur) => {
+        let newState = [...cur, snap.key];
+        return newState;
+      });
+    });
+
+    statusRef.on("child_removed", (snap) => {
+      setOnline((cur) => {
+        let newstate = [...cur];
+        let index = newstate.indexOf(snap.key);
+        newstate.splice(index, 1);
+        return newstate;
+      });
+    });
+
+    return () => {
+      statusRef.off();
+    };
+  }, [userstate]);
 
   const generateChannelId = (userId) => {
     if (props.user.uid < userId) {
@@ -51,6 +87,10 @@ function PrivitChat(props) {
                 props.channel && generateChannelId(user.id) === props.channel.id
               }
             >
+              <Icon
+                name="circle"
+                color={`${online.indexOf(user.id) !== -1 ? "green" : "red"}`}
+              />
               {"@ " + user.name}
             </Menu.Item>
           );
