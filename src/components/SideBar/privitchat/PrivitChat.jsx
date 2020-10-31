@@ -56,6 +56,7 @@ function PrivitChat(props) {
 
     return () => {
       statusRef.off();
+      console.log(props.user.uid);
     };
   }, [userstate]);
 
@@ -107,7 +108,7 @@ function PrivitChat(props) {
         </span>
         ({userstate.length - 1})
       </Menu.Item>
-      {displayUsers()}
+      {props.user.uid ? displayUsers() : null}
     </Menu.Menu>
   );
 }

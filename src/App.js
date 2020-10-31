@@ -3,15 +3,27 @@ import SideMenu from "./components/SideBar/SideMenu";
 import { Grid } from "semantic-ui-react";
 import "./App.css";
 import Message from "./components/Message/Message";
-function App() {
-  return (
-    <Grid columns="equal">
-      <SideMenu />
+import { connect } from "react-redux";
+function App(props) {
+  if (props.user) {
+    return (
+      <Grid columns="equal">
+        <SideMenu />
 
-      <Grid.Column className="messagebox">
-        <Message />
-      </Grid.Column>
-    </Grid>
-  );
+        <Grid.Column className="messagebox">
+          <Message />
+        </Grid.Column>
+      </Grid>
+    );
+  }
+  return <div></div>;
 }
-export default App;
+
+const mapsStateToProps = (state) => {
+  return {
+    user: state.userReducer.curUser,
+    channel: state.channelReducer.curChannel,
+  };
+};
+
+export default connect(mapsStateToProps)(App);
